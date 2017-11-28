@@ -4,67 +4,64 @@ import {send, subscribe} from 'react-native-training-chat-server';
 import ReversedFlatList from 'react-native-reversed-flat-list';
 import Header from './Header';
 
-const NAME = 'Jenna';
-const CHANNEL = 'Reactivate';
-const AVATAR = 'https://pbs.twimg.com/profile_images/806501058679816192/ZHFWIF-z_400x400.jpg';
 
-export default class Chat extends React.Component {
+export default class UserInput extends React.Component {
   state = {
-    messages: [],
-    typing: "",
     name: this.props.name,
-    channel: this.props.channel
+    channel: this.props.channel,
+    nameTyping: '',
+    channelTyping: ''
   };
 
   componentDidMount() {
-    subscribe(this.state.channel, messages => {
-      this.setState({messages});
-    });
-  }
-  async sendMessage() {
-  // send message to our channel, with sender name.
-  // the `await` keyword means this function execution
-  // waits until the message is sent
-  await send({
-    channel:this.state.channel,
-    sender: this.state.name,
-    avatar: AVATAR,
-    message: this.state.typing
-  });
 
-  // set the component state (clears text input)
-  this.setState({
-    typing: '',
-  });
-}
-  renderItem({item}) {
-    return (
-      <View style={styles.row}>
-        <Image style={styles.avatar} source={{uri: item.avatar}} />
-        <Text style={styles.sender}>{item.sender}</Text>
-        <Text style={styles.message}>{item.message}</Text>
-      </View>
-    );
   }
+
+  addUser = () => {
+    this.setState({
+      name: this.state.nameTyping
+    })
+  }
+  addChannel = () => {
+    this.setState({
+      channel: this.state.channelTyping
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
-      <Header title={this.state.channel} />
-        <ReversedFlatList data={this.state.messages} renderItem={this.renderItem} />
+
         <KeyboardAvoidingView behavior="padding">
           <View style={styles.footer}>
             <TextInput
-              value={this.state.typing}
-              onChangeText={text => this.setState({typing: text})}
+              value={this.state.nameTyping}
+              onChangeText={text => this.setState({nameTyping: text})}
               style={styles.input}
               underlineColorAndroid="transparent"
-              placeholder="Type something nice"
+              placeholder="What is your name?"
             />
-            <TouchableOpacity onPress={this.sendMessage.bind(this)}>
-              <Text style={styles.send}>Send</Text>
+            <TouchableOpacity onPress={this.addUser.bind(this)}>
+              <Text style={styles.send}>Submit</Text>
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
+
+        <KeyboardAvoidingView behavior="padding">
+          <View style={styles.footer}>
+            <TextInput
+              value={this.state.channelTyping}
+              onChangeText={text => this.setState({channelTyping: text})}
+              style={styles.input}
+              underlineColorAndroid="transparent"
+              placeholder="What channel would you like to join?"
+            />
+            <TouchableOpacity onPress={this.addChannel.bind(this)}>
+              <Text style={styles.send}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+
       </View>
     );
   }
