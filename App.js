@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TextInput} from 'react-native';
 import {send, subscribe} from 'react-native-training-chat-server';
 
 const NAME = 'Jenna';
@@ -15,13 +15,17 @@ export default class App extends React.Component {
       this.setState({messages});
     });
   }
+  renderItem({item}) {
+    return (
+      <View style={styles.row}>
+        <Text style={styles.sender}>{item.sender}</Text>
+        <Text style={styles.message}>{item.message}</Text>
+      </View>
+    );
+  }
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
-      </View>
+      <FlatList data={this.state.messages} renderItem={this.renderItem} />
     );
   }
 }
@@ -30,7 +34,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+  row: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#D36B4E',
+  },
+  message: {
+    fontSize: 20,
+  },
+  sender: {
+    fontWeight: 'bold',
+    paddingRight: 10,
+    color: '#456B74',
   },
 });
