@@ -1,9 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, TextInput, KeyboardAvoidingView, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, FlatList, TextInput, KeyboardAvoidingView, TouchableOpacity, Image} from 'react-native';
 import {send, subscribe} from 'react-native-training-chat-server';
+import ReversedFlatList from 'react-native-reversed-flat-list';
+import Header from './Header';
 
 const NAME = 'Jenna';
 const CHANNEL = 'Reactivate';
+const AVATAR = 'https://pbs.twimg.com/profile_images/806501058679816192/ZHFWIF-z_400x400.jpg';
 
 export default class App extends React.Component {
   state = {
@@ -23,6 +26,7 @@ export default class App extends React.Component {
   await send({
     channel: CHANNEL,
     sender: NAME,
+    avatar: AVATAR,
     message: this.state.typing
   });
 
@@ -34,6 +38,7 @@ export default class App extends React.Component {
   renderItem({item}) {
     return (
       <View style={styles.row}>
+        <Image style={styles.avatar} source={{uri: item.avatar}} />
         <Text style={styles.sender}>{item.sender}</Text>
         <Text style={styles.message}>{item.message}</Text>
       </View>
@@ -42,7 +47,8 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <FlatList data={this.state.messages} renderItem={this.renderItem} />
+      <Header title={CHANNEL} />
+        <ReversedFlatList data={this.state.messages} renderItem={this.renderItem} />
         <KeyboardAvoidingView behavior="padding">
           <View style={styles.footer}>
             <TextInput
@@ -71,6 +77,15 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#D36B4E',
+  },
+  avatar: {
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    marginRight: 10,
+  },
+  rowText: {
+    flex: 1,
   },
   message: {
     fontSize: 20,
